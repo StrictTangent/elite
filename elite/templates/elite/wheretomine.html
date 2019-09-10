@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Where To Mine</title>
+
+    <style>
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding: 5px;
+        text-align: left;
+        }
+        th {
+          font-size: 1em
+        }
+</style>
+
+  </head>
+  <body>
+
+    <form action="/elite/" method="post">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="GO!">
+    </form>
+
+    <div class="mine-results">
+      <h1>MINING LOCATIONS</h1>
+
+      <table>
+        <tr>
+          <th>SYSTEM</th>
+          <th>BODY</th>
+          <th>ARRIVAL DISTANCE</th>
+        </tr>
+        {% for planet in results.planets %}
+        <tr>
+          <td>{{ planet.systemName }}</td>
+          <td>{{ planet.name }}</td>
+          <td>{{ planet.distanceToArrival}} <i>ls</i></td>
+        </tr>
+        {% endfor %}
+      <table>
+    </div>
+
+    <div class="sell-results">
+      <h1>SELLING LOCATIONS</h1>
+      <table>
+        <tr>
+          <th>SYSTEM</th>
+          <th>STATION</th>
+          <th>LANDING PAD</th>
+          <th>ARRIVAL DISTANCE</th>
+          <th>SELL PRICE</th>
+        </tr>
+      {% for station in results.stations %}
+      <tr>
+        <td>{{ station.systemName }}</td>
+        <td>{{ station.name }}</td>
+        <td>{{ station.pad }}</td>
+        <td>{{ station.distanceToArrival }} <i>ls</i></td>
+        <td>{{ station.price }}</td>
+      </tr>
+      {% endfor %}
+    </div>
+
+  </body>
+</html>
