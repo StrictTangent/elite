@@ -24,10 +24,10 @@ class Command(BaseCommand):
             index = 0
             planetsToAdd = []
 
-            newPlanets = set()
-            existingPlanets = set()
+            #newPlanets = set()
+            #existingPlanets = set()
             #names = Planet.objects.values_list('name', flat=True)
-            existingPlanets.update(Planet.objects.values_list('name', flat=True))
+            #existingPlanets.update(Planet.objects.values_list('name', flat=True))
             for body in bodies:
                 if body['type'] == 'Planet':
                     foundIcy = False
@@ -37,7 +37,18 @@ class Command(BaseCommand):
                                 foundIcy = True
                         if foundIcy:
                             if body['reserveLevel'] == 'Pristine':
-                                newPlanets.add(body['name'])
+                                if not Planet.objects.filter(name=body['name']).exists():
+                                    planetToAdd = Planet(name = body['name'],
+                                        distanceToArrival = body['distanceToArrival'],
+                                        systemName = body['systemName'])
+                                    planetsToAdd.append(planetToAdd)
+                                    added += 1
+                                    index += 1
+                                    if index == 999:
+                                        Planet.objects.bulk_create(planetsToAdd)
+                                        self.stdout.write("Added Batch of: " + str(index))
+                                        planetsToAdd = []
+                                        index = 0
                             else:
                                 self.stdout.write('found ICY + NOT PRISTINE')
                                 if Planet.objects.filter(name=body['name']).exists():
@@ -45,39 +56,10 @@ class Command(BaseCommand):
                                     self.stdout.write("Deleted Planet: " + body['name'])
                                     deleted += 1
 
-            namesToAdd = newPlanets - existingPlanets
-            B = newPlanets & existingPlanets
-            self.stdout.write("BRAND NEW:")
-            self.stdout.write(len(namesToAdd))
-            self.stdout.write("WOULD BE DUPLICATES:")
-            self.stdout.write(len(B))
+            if index > 0: #if there are left over planets...
+                Planet.objects.bulk_create(planetsToAdd)
+                self.stdout.write("Added Batch of: " + str(index))
 
-            index = 0
-
-            with open('json/updatedPlanets.json', 'rb') as input_file2:
-                bodies = ijson.items(input_file2, 'item')
-                for body in bodies:
-                    if body['name'] in namesToAdd:
-                        planetToAdd = Planet(name = body['name'],
-                            distanceToArrival = body['distanceToArrival'],
-                            systemName = body['systemName'])
-                        planetsToAdd.append(planetToAdd)
-                        added += 1
-                        index += 1
-                        if index == 999:
-                            Planet.objects.bulk_create(planetsToAdd)
-                            self.stdout.write("Added Batch of: " + str(index))
-                            planetsToAdd = []
-                            index = 0
-                if index > 0: #if there are left over planets...
-                    Planet.objects.bulk_create(planetsToAdd)
-                    self.stdout.write("Added Batch of: " + str(index))
-
-                self.stdout.write("BRAND NEW:")
-                self.stdout.write(len(namesToAdd))
-                self.stdout.write("WOULD BE DUPLICATES:")
-                self.stdout.write(len(B))
-
-                self.stdout.write("DONE")
-                self.stdout.write("Added: " + str(added))
-                self.stdout.write("Deleted: " + str(deleted))
+            self.stdout.write("DONE")
+            self.stdout.write("Added: " + str(added))
+            self.stdout.write("Deleted: " + str(deleted))
