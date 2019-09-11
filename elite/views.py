@@ -95,8 +95,10 @@ def elite_main(request):
 
 
 
-@login_required()
+#@login_required()
 def load_database(request):
+
+    print('here we go!!!')
 
     with open('json/databasedump.json', 'rb') as input_file:
         entries = ijson.items(input_file, 'item')
