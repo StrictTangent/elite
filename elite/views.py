@@ -121,7 +121,7 @@ def load_database(request):
                 if pIndex == 999:
                     Planet.objects.bulk_create(planetsToAdd)
                     print("Added Batch of: " + str(pIndex))
-                    print("Total: " + str(pTotal)) + " Planets")
+                    print("Total: " + str(pTotal) + " Planets")
                     planetsToAdd = []
                     pIndex = 0
 
@@ -141,19 +141,19 @@ def load_database(request):
                 if sIndex == 999:
                     Price.objects.bulk_create(stationsToAdd)
                     print("Added Batch of: " + str(sIndex))
-                    print("Total: " + str(sTotal)) + " Stations")
+                    print("Total: " + str(sTotal) + " Stations")
                     stationsToAdd = []
                     sIndex = 0
 
         if pIndex > 0:
             Planet.objects.bulk_create(planetsToAdd)
             print("Added Batch of: " + str(pIndex))
-            print("Total: " + str(pTotal)) + " Planets")
+            print("Total: " + str(pTotal) + " Planets")
 
         if sIndex > 0:
             Price.objects.bulk_create(stationsToAdd)
             print("Added Batch of: " + str(sIndex) + " Stations")
-            print("Total: " + str(sTotal)) + " Stations")
+            print("Total: " + str(sTotal) + " Stations")
 
     return HttpResponse('done')
 
