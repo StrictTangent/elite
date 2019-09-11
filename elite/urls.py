@@ -8,4 +8,5 @@ urlpatterns = [
     path("importplanets/", views.import_planets, name="import_planets"),
     path("updateplanets/", views.update_planets, name="update_planets"),
     path("importprices/", views.import_prices, name="import_prices"),
+    path("loaddatabase/", views.load_database, name="load_database"),
 ]
