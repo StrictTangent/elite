@@ -13,8 +13,11 @@ with open('databasedump.json', 'rb') as input_file:
     sIndex = 0
     sTotal = 0
 
+    MODE = 'price'
+
     for entry in entries:
-        if entry['model'] == 'elite.planet':
+        #if entry['model'] == 'elite.planet':
+        if MODE == 'planet':
             fields = entry['fields']
             planetToAdd = Planet(name = fields['name'],
                 distanceToArrival = fields['distanceToArrival'],
@@ -30,7 +33,7 @@ with open('databasedump.json', 'rb') as input_file:
                 planetsToAdd = []
                 pIndex = 0
 
-        elif entry['model'] == 'elite.Price':
+        elif entry['model'] == 'elite.price':
             fields = entry['fields']
             stationToAdd = Price(system_id=fields['system_id'],
                 station_id=fields['station_id'],
