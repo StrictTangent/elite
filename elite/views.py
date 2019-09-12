@@ -25,7 +25,7 @@ def elite_main(request):
             response = requests.get(url = systemsURL, params = systemsPARAMS)
             systems = response.json()
 
-            print('got json')
+            #print('got json')
 
             listOfPlanets = []
             listOfStations = []
@@ -34,7 +34,7 @@ def elite_main(request):
             index = 0
             for system in systems:
                 index += 1
-                print(index)
+                #print(index)
                 if index == 1:
                     query = Q(systemName = system['name'])
                 else:
@@ -69,7 +69,7 @@ def elite_main(request):
 
 
             sellingStations = []
-            print(len(listOfStations))
+            #print(len(listOfStations))
             if len(listOfStations) > 0:
 
                 URL = 'https://www.edsm.net/api-system-v1/stations/market'

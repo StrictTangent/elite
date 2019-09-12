@@ -8,11 +8,15 @@
     <style>
 
       body {
+        background-image: url(/media/elite.png);
+        background-repeat-y: no-repeat;
+        background-position: right top;
         font-family: Ubuntu;
+        color: white;
       }
 
       table, th, td {
-        border: 1px solid black;
+        border: 1px solid orange;
         border-collapse: collapse;
         padding: 5px;
         text-align: left;
@@ -20,6 +24,9 @@
         th {
           font-size: 1em
         }
+
+        tr:nth-child(even) {background: rgba(128, 128, 128, .5)}
+        tr:nth-child(odd) {background-color: #black;}
 </style>
 
   </head>
