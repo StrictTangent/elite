@@ -46,6 +46,7 @@ class Command(BaseCommand):
 
 
 
+
                         ##ADD LANDING PAD AND DISTANCE!!!!
                         stationToAdd = Price(system_id = row['id'],
                             systemName=system_name,

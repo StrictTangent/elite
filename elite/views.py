@@ -14,11 +14,14 @@ def elite_main(request):
         form = LocationForm(request.POST)
 
         if form.is_valid():
+
+            RADIUS = 30
+
             location = form.cleaned_data['location']
 
             systemsURL = 'https://www.edsm.net/api-v1/sphere-systems'
 
-            systemsPARAMS = {'systemName':location,'radius':30, 'showId':'showId'}
+            systemsPARAMS = {'systemName':location,'radius':RADIUS, 'showId':'showId'}
             response = requests.get(url = systemsURL, params = systemsPARAMS)
             systems = response.json()
 
@@ -26,7 +29,7 @@ def elite_main(request):
 
             listOfPlanets = []
             listOfStations = []
-            print(str(len(systems)) + " systems...")
+            #print(str(len(systems)) + " systems...")
 
             index = 0
             for system in systems:
@@ -55,7 +58,7 @@ def elite_main(request):
 
             listOfStations.sort(key=lambda x: x.sell_price, reverse=True)
 
-            print(listOfPlanets)
+            #print(listOfPlanets)
 
             miningPlanets = []
             for p in listOfPlanets:
@@ -66,13 +69,30 @@ def elite_main(request):
 
 
             sellingStations = []
+            print(len(listOfStations))
             if len(listOfStations) > 0:
-                for i in range(10):
+
+                URL = 'https://www.edsm.net/api-system-v1/stations/market'
+
+                stationRange = 20
+                if len(listOfStations) < 20:
+                    stationRange = len(listOfStations)
+                for i in range(stationRange):
                     name = listOfStations[i].station_name
                     sysName = listOfStations[i].systemName
                     price = listOfStations[i].sell_price
                     distance = listOfStations[i].distance_to_star
                     pad = listOfStations[i].max_landing_pad_size
+
+
+
+                    PARAMS = {'systemName':sysName, 'stationName':name}
+                    response = requests.get(url=URL, params=PARAMS)
+                    data = response.json()
+                    commodities = data['commodities']
+                    for commodity in commodities:
+                        if commodity['id'] == 'opal':
+                            price = commodity['sellPrice']
 
                     sellingStations.append({'name':name,
                         'systemName':sysName,
@@ -80,9 +100,10 @@ def elite_main(request):
                         'distanceToArrival':distance,
                         'pad':pad})
 
-                    print(listOfStations[i].station_name + " - " + "COST: " + str(listOfStations[i].sell_price))
+                    sellingStations.sort(key=lambda x: x['price'], reverse=True)
 
-            results = {'stations':sellingStations, 'planets':listOfPlanets}
+
+            results = {'stations':sellingStations[:10], 'planets':listOfPlanets}
 
             return render(request, 'elite/wheretomine.html', {'form':form,'results':results})
 

@@ -4,7 +4,13 @@
     <meta charset="utf-8">
     <title>Where To Mine</title>
 
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
     <style>
+
+      body {
+        font-family: Ubuntu;
+      }
+
       table, th, td {
         border: 1px solid black;
         border-collapse: collapse;
@@ -19,51 +25,58 @@
   </head>
   <body>
 
+    <h1>CMDR Strict's Void Opal Helper</h1>
+
     <form action="/elite/" method="post">
       {% csrf_token %}
       {{ form }}
       <input type="submit" value="GO!">
     </form>
 
-    <div class="mine-results">
-      <h1>MINING LOCATIONS</h1>
 
-      <table>
+    {% if results %}
+
+      <div class="mine-results">
+        <h2>MINING LOCATIONS</h2>
+
+        <table>
+          <tr>
+            <th>SYSTEM</th>
+            <th>BODY</th>
+            <th>ARRIVAL DISTANCE</th>
+          </tr>
+          {% for planet in results.planets %}
+          <tr>
+            <td>{{ planet.systemName }}</td>
+            <td>{{ planet.name }}</td>
+            <td>{{ planet.distanceToArrival}} <i>ls</i></td>
+          </tr>
+          {% endfor %}
+        <table>
+      </div>
+
+      <div class="sell-results">
+        <h2>SELLING LOCATIONS</h2>
+        <table>
+          <tr>
+            <th>SYSTEM</th>
+            <th>STATION</th>
+            <th>LANDING PAD</th>
+            <th>ARRIVAL DISTANCE</th>
+            <th>SELL PRICE</th>
+          </tr>
+        {% for station in results.stations %}
         <tr>
-          <th>SYSTEM</th>
-          <th>BODY</th>
-          <th>ARRIVAL DISTANCE</th>
-        </tr>
-        {% for planet in results.planets %}
-        <tr>
-          <td>{{ planet.systemName }}</td>
-          <td>{{ planet.name }}</td>
-          <td>{{ planet.distanceToArrival}} <i>ls</i></td>
+          <td>{{ station.systemName }}</td>
+          <td>{{ station.name }}</td>
+          <td>{{ station.pad }}</td>
+          <td>{{ station.distanceToArrival }} <i>ls</i></td>
+          <td>{{ station.price }}</td>
         </tr>
         {% endfor %}
-      <table>
-    </div>
+      </div>
 
-    <div class="sell-results">
-      <h1>SELLING LOCATIONS</h1>
-      <table>
-        <tr>
-          <th>SYSTEM</th>
-          <th>STATION</th>
-          <th>LANDING PAD</th>
-          <th>ARRIVAL DISTANCE</th>
-          <th>SELL PRICE</th>
-        </tr>
-      {% for station in results.stations %}
-      <tr>
-        <td>{{ station.systemName }}</td>
-        <td>{{ station.name }}</td>
-        <td>{{ station.pad }}</td>
-        <td>{{ station.distanceToArrival }} <i>ls</i></td>
-        <td>{{ station.price }}</td>
-      </tr>
-      {% endfor %}
-    </div>
+    {% endif %}
 
   </body>
 </html>
