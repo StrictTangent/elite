@@ -10,13 +10,19 @@ class Command(BaseCommand):
         DOWNLOAD = True
 
         if DOWNLOAD:
+
+            startTime = time.time()
+
             URL = "https://www.edsm.net/dump/bodies7days.json"
             response = requests.get(URL, stream=True)
 
             with open('json/updatedPlanets.json', 'wb') as handle:
                 for block in response.iter_content(1024):
                     handle.write(block)
+            self.stdout.write("Finished download in " + str(time.time() - startTime) + " seconds")
 
+        beginTime = time.time()
+        startTime = time.time()
         with open('json/updatedPlanets.json', 'rb') as input_file:
             bodies = ijson.items(input_file, 'item')
             added = 0
@@ -32,6 +38,9 @@ class Command(BaseCommand):
             #names = Planet.objects.values_list('name', flat=True)
             #existingPlanets.update(Planet.objects.values_list('name', flat=True))
 
+            eligablePlanets = [] #dictionarys
+            eligableSystems = [] #strings
+
             for body in bodies:
                 if body['type'] == 'Planet':
                     foundIcy = False
@@ -41,23 +50,10 @@ class Command(BaseCommand):
                                 foundIcy = True
                         if foundIcy:
                             if body['reserveLevel'] == 'Pristine':
-                                self.stdout.write("Found Pristine... checkingdatabase...")
-                                if Planet.objects.filter(name=body['name']).exists() == False:
-                                    self.stdout.write("Finished check. Adding planet...")
-                                    planetToAdd = Planet(name = body['name'],
-                                        distanceToArrival = body['distanceToArrival'],
-                                        systemName = body['systemName'])
-                                    planetsToAdd.append(planetToAdd)
-                                    self.stdout.write("adding planet...")
-                                    added += 1
-                                    index += 1
-                                    if index == 999:
-                                        Planet.objects.bulk_create(planetsToAdd)
-                                        self.stdout.write("Added Batch of: " + str(index))
-                                        planetsToAdd = []
-                                        index = 0
-                                else:
-                                    self.stdout.write("Finished check. Not adding planet...")
+                                eligableSystems.append(body['systemName'])
+                                eligablePlanets.append({'name':body['name'],
+                                                        'systemName':body['systemName'],
+                                                        'distanceToArrival':body['distanceToArrival']})
                             else:
                                 self.stdout.write('found ICY + NOT PRISTINE')
                                 if Planet.objects.filter(name=body['name']).exists():
@@ -65,10 +61,44 @@ class Command(BaseCommand):
                                     self.stdout.write("Deleted Planet: " + body['name'])
                                     deleted += 1
 
+            #finished first loop
+            self.stdout.write("Finished adding eligables in " + str(time.time() - startTime) + " seconds")
+            startTime = time.time()
+            sIndex = 0
+            names = []#list of names
+            for system in eligableSystems:
+                sIndex += 1
+                if sIndex == 1:
+                    query = Q(systemName=system)
+                else:
+                    query.add(Q(systemName=system), Q.OR)
+                if sIndex == 990 or sIndex == len(eligableSystems):
+                    queryset = Planet.objects.filter(query)
+                    for item in queryset:
+                        names.append(item.name)
+                    sIndex = 0
+            del eligableSystems
+            self.stdout.write("Finished Q Query Loop in " + str(time.time() - startTime) + " seconds")
+            startTime = time.time()
+            for planet in eligablePlanets:
+                if planet['name'] in names:
+                    planetToAdd = Planet(name = planet['name'],
+                        distanceToArrival = planet['distanceToArrival'],
+                        systemName = planet['systemName'])
+                    planetsToAdd.append(planetToAdd)
+                    #self.stdout.write("adding planet...")
+                    added += 1
+                    index += 1
+                    if index == 999:
+                        Planet.objects.bulk_create(planetsToAdd)
+                        self.stdout.write("Added Batch of: " + str(index))
+                        planetsToAdd = []
+                        index = 0
             if index > 0: #if there are left over planets...
                 Planet.objects.bulk_create(planetsToAdd)
                 self.stdout.write("Added Batch of: " + str(index))
 
             self.stdout.write("DONE")
+            self.stdout.write("Finished " + str(time.time() - beginTime) + " seconds")
             self.stdout.write("Added: " + str(added))
             self.stdout.write("Deleted: " + str(deleted))
