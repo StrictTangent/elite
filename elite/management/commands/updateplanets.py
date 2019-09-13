@@ -39,7 +39,7 @@ class Command(BaseCommand):
             #existingPlanets.update(Planet.objects.values_list('name', flat=True))
 
             eligablePlanets = [] #dictionarys
-            eligableSystems = [] #strings
+            eligableSystems = set() #strings
 
             for body in bodies:
                 if body['type'] == 'Planet':
@@ -50,7 +50,7 @@ class Command(BaseCommand):
                                 foundIcy = True
                         if foundIcy:
                             if body['reserveLevel'] == 'Pristine':
-                                eligableSystems.append(body['systemName'])
+                                eligableSystems.add(body['systemName'])
                                 eligablePlanets.append({'name':body['name'],
                                                         'systemName':body['systemName'],
                                                         'distanceToArrival':body['distanceToArrival']})
