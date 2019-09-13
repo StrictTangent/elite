@@ -66,6 +66,7 @@ class Command(BaseCommand):
             startTime = time.time()
             sIndex = 0
             names = []#list of names
+            self.stdout.write(str(len(eligableSystems)) + "eligible systems...")
             for system in eligableSystems:
                 sIndex += 1
                 if sIndex == 1:
@@ -73,6 +74,8 @@ class Command(BaseCommand):
                 else:
                     query.add(Q(systemName=system), Q.OR)
                 if sIndex == 990 or sIndex == len(eligableSystems):
+                    self.stdout.write('making a query...')
+
                     queryset = Planet.objects.filter(query)
                     for item in queryset:
                         names.append(item.name)
