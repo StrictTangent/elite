@@ -1,5 +1,6 @@
 from django.core. management.base import BaseCommand
 from elite.models import Planet
+from django.db.models import Q
 import json, requests, ijson, csv, time
 
 class Command(BaseCommand):
@@ -24,10 +25,13 @@ class Command(BaseCommand):
             index = 0
             planetsToAdd = []
 
+            self.stdout.write("getting started...")
+
             #newPlanets = set()
             #existingPlanets = set()
             #names = Planet.objects.values_list('name', flat=True)
             #existingPlanets.update(Planet.objects.values_list('name', flat=True))
+
             for body in bodies:
                 if body['type'] == 'Planet':
                     foundIcy = False
@@ -37,11 +41,14 @@ class Command(BaseCommand):
                                 foundIcy = True
                         if foundIcy:
                             if body['reserveLevel'] == 'Pristine':
-                                if not Planet.objects.filter(name=body['name']).exists():
+                                self.stdout.write("Found Pristine... checkingdatabase...")
+                                if Planet.objects.filter(name=body['name']).exists() == False:
+                                    self.stdout.write("Finished check. Adding planet...")
                                     planetToAdd = Planet(name = body['name'],
                                         distanceToArrival = body['distanceToArrival'],
                                         systemName = body['systemName'])
                                     planetsToAdd.append(planetToAdd)
+                                    self.stdout.write("adding planet...")
                                     added += 1
                                     index += 1
                                     if index == 999:
@@ -49,10 +56,12 @@ class Command(BaseCommand):
                                         self.stdout.write("Added Batch of: " + str(index))
                                         planetsToAdd = []
                                         index = 0
+                                else:
+                                    self.stdout.write("Finished check. Not adding planet...")
                             else:
                                 self.stdout.write('found ICY + NOT PRISTINE')
                                 if Planet.objects.filter(name=body['name']).exists():
-                                    database.get(name=body['name']).delete()
+                                    Planet.objects.get(name=body['name']).delete()
                                     self.stdout.write("Deleted Planet: " + body['name'])
                                     deleted += 1
 
