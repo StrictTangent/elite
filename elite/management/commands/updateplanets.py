@@ -84,7 +84,7 @@ class Command(BaseCommand):
             self.stdout.write("Finished Q Query Loop in " + str(time.time() - startTime) + " seconds")
             startTime = time.time()
             for planet in eligablePlanets:
-                if planet['name'] in names:
+                if planet['name'] not in names:
                     planetToAdd = Planet(name = planet['name'],
                         distanceToArrival = planet['distanceToArrival'],
                         systemName = planet['systemName'])
