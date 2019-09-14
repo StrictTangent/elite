@@ -13,13 +13,16 @@ def elite_main(request):
 
         if form.is_valid():
 
-            RADIUS = 30 # set the search radius to 30 lightyears
+            RADIUS_MAX = 50 # set the search radius to 30 lightyears
 
             location = form.cleaned_data['location']
+            radius = form.cleaned_data['radius']
+            if radius > RADIUS_MAX:
+                radius = RADIUS_MAX
 
             #Set parameters and get request from EDSM
             systemsURL = 'https://www.edsm.net/api-v1/sphere-systems'
-            systemsPARAMS = {'systemName':location,'radius':RADIUS, 'showId':'showId'}
+            systemsPARAMS = {'systemName':location,'radius':radius, 'showId':'showId'}
             response = requests.get(url = systemsURL, params = systemsPARAMS)
             systems = response.json()
 
