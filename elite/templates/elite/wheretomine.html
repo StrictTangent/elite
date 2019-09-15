@@ -11,6 +11,7 @@
       body {
         background-color: #000000;
         background-image: url('/static/elite.png');
+        background-size: cover;
         background-repeat-y: no-repeat;
         background-position: right top;
         background-attachment: fixed;
@@ -36,7 +37,7 @@
   <body>
 
     <h1>CMDR Strict's Void Opal Tool</h1>
-    <p><i>Enter star system to find locations to mine and sell void opals within 30 lightyears.</i></p>
+    <p><i>Enter star system to find locations to mine and sell void opals within radius of up to 50 light years.</i></p>
     <form action="/elite/" method="post">
       {% csrf_token %}
       {{ form }}
@@ -87,6 +88,6 @@
       </div>
 
     {% endif %}
-
+    <p>&copy; 2019 StrictTangent 2019</p>
   </body>
 </html>
