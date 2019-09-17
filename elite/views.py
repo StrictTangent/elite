@@ -37,9 +37,20 @@ def elite_main(request):
                         trafficURL = 'https://www.edsm.net/api-system-v1/traffic'
                         trafficPARAMS = {'systemName':system['name']}
 
+                        securityURL = 'https://www.edsm.net/api-v1/system'
+                        securityPARAMS = {'systemName':system['name'], 'showInformation':1}
+
                         response = requests.get(url=trafficURL, params=trafficPARAMS)
                         trafficData = response.json()
+                        del response
                         traffic = trafficData['traffic']['week']
+                        del trafficData
+
+                        response = requests.get(url=securityURL, params=securityPARAMS)
+                        securityData = response.json()
+                        del response
+                        security = securityData['information']['security']
+                        del securityData
 
                         planets = json.loads(starsystem.planets)
                         for planet in planets:
@@ -47,7 +58,8 @@ def elite_main(request):
                                 'systemName':system['name'],
                                 'distanceToArrival':planet['distanceToArrival'],
                                 'distance':system['distance'],
-                                'traffic':traffic})
+                                'traffic':traffic,
+                                'security':security})
                     if len(pList) >= 20:
                         break
 

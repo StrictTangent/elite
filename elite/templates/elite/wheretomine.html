@@ -72,6 +72,7 @@
             <th>ARRIVAL DISTANCE</th>
             <th>Distance from {{ form.location.value }}</th>
             <th>Weekly Traffic</th>
+            <th>Security Level</th>
           </tr>
           {% for planet in planetResults %}
           <tr>
@@ -80,6 +81,7 @@
             <td>{{ planet.distanceToArrival}} <i>ls</i></td>
             <td>{{ planet.distance }} <i>ly</i></td>
             <td>{{ planet.traffic }} ships</td>
+            <td>{{ planet.security }}</td>
           </tr>
           {% endfor %}
         <table>
