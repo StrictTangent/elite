@@ -18,5 +18,12 @@ class Price(models.Model):
     max_landing_pad_size = models.TextField()
     distance_to_star = models.IntegerField()
 
-    def __str__(self):             
+    def __str__(self):
         return self.station_name
+
+class System(models.Model):
+    name = models.TextField()
+    planets = models.TextField()
+
+    def __str__(self):
+        return self.name

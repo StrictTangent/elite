@@ -38,6 +38,13 @@
         text-align: left;
         color: white;
       }
+      input.stationButton {
+        background: none;
+        color: #fff;
+        cursor: pointer;
+        border: 0;
+        font-size: 1em;
+      }
 </style>
 
   </head>
@@ -52,44 +59,60 @@
     </form>
 
 
-    {% if results %}
+    {% if planetResults %}
 
       <div class="mine-results">
-        <h2>MINING LOCATIONS</h2>
+        <h2>Planets with icy rings near {{ stationResults.sellStation }}</h2>
 
         <table>
           <tr>
             <th>SYSTEM</th>
             <th>BODY</th>
             <th>ARRIVAL DISTANCE</th>
+            <th>Distance from {{ form.location.value }}</th>
+            <th>Weekly Traffic</th>
           </tr>
-          {% for planet in results.planets %}
+          {% for planet in planetResults %}
           <tr>
             <td>{{ planet.systemName }}</td>
             <td>{{ planet.name }}</td>
             <td>{{ planet.distanceToArrival}} <i>ls</i></td>
+            <td>{{ planet.distance }} <i>ly</i></td>
+            <td>{{ planet.traffic }} ships</td>
           </tr>
           {% endfor %}
         <table>
       </div>
-
+      {% endif %}
+      {% if stationResults %}
       <div class="sell-results">
-        <h2>SELLING LOCATIONS</h2>
+        <h2>Selling Locations</h2>
+        <p>Select a station name to view mining locations nearby.</p>
         <table>
           <tr>
             <th>SYSTEM</th>
             <th>STATION</th>
             <th>LANDING PAD</th>
             <th>ARRIVAL DISTANCE</th>
+            <th>Distance from {{ form.location.value }}</th>
             <th>SELL PRICE</th>
           </tr>
-        {% for station in results.stations %}
+        {% for station in stationResults.stations %}
         <tr>
           <td>{{ station.systemName }}</td>
-          <td>{{ station.name }}</td>
+          <td><form name="get_planets" action='/elite/' method="post" action="{% url 'elite:elite_main' %}">
+            {% csrf_token %}
+            <input type="hidden" name="location" value="{{ form.location.value }}">
+            <input type="hidden" name="radius" value="{{ form.radius.value }}">
+            <input type="hidden" name="stationName" value="{{ station.name }}">
+            <input type="hidden" name="systemName" value="{{ station.systemName }}">
+
+            <input class="stationButton" type="submit" value="{{ station.name }}"></form></td>
           <td>{{ station.pad }}</td>
           <td>{{ station.distanceToArrival }} <i>ls</i></td>
+          <td>{{ station.distance }} <i>ly</i></td>
           <td>{{ station.price }}</td>
+
         </tr>
         {% endfor %}
       </div>
