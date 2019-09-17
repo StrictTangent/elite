@@ -49,7 +49,10 @@ def elite_main(request):
                         response = requests.get(url=securityURL, params=securityPARAMS)
                         securityData = response.json()
                         del response
-                        security = securityData['information']['security']
+                        if securityData['information']:
+                            security = securityData['information']['security']
+                        else:
+                            security = "Unknown"
                         del securityData
 
                         planets = json.loads(starsystem.planets)
