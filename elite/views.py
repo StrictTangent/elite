@@ -20,7 +20,7 @@ def elite_main(request):
                 listOfSystems = []  # this is the list of systems within the radius
 
                 location = request.POST.get('systemName')
-                systemsPARAMS = {'systemName':location,'radius':30, 'showId':'showId'}
+                systemsPARAMS = {'systemName':location,'radius':20}#, 'showId':'showId'}
                 response = requests.get(url = systemsURL, params = systemsPARAMS)
                 systems = response.json()
 
@@ -56,7 +56,7 @@ def elite_main(request):
                 return render(request, 'elite/wheretomine.html', {'form':form,'stationResults':stationResults, 'planetResults':pList})
 
             else:   #IF WE ARE LOOKING UP STATIONS
-                RADIUS_MAX = 50 # set the search radius to 30 lightyears
+                RADIUS_MAX = 100 # set the search radius to 30 lightyears
 
                 location = form.cleaned_data['location']
                 radius = form.cleaned_data['radius']
@@ -64,7 +64,7 @@ def elite_main(request):
                     radius = RADIUS_MAX
 
                 #Set parameters and get request from EDSM
-                systemsPARAMS = {'systemName':location,'radius':radius, 'showId':'showId'}
+                systemsPARAMS = {'systemName':location,'radius':radius}#, 'showId':'showId'}
                 response = requests.get(url = systemsURL, params = systemsPARAMS)
                 systems = response.json()
 
@@ -82,18 +82,12 @@ def elite_main(request):
                         query.add(Q(systemName = system['name']), Q.OR)
 
                     if index == 990:
-                        #bodies = Planet.objects.filter(query)
                         stations = Price.objects.filter(query)
-                        #for body in bodies:
-                        #    listOfPlanets.append(body)      # add planets found to the list
                         for station in stations:
                             listOfStations.append(station)  # add stations found to the list
                         index = 0
                 if index > 0:
-                    #bodies = Planet.objects.filter(query)
                     stations = Price.objects.filter(query)
-                    #for body in bodies:
-                    #    listOfPlanets.append(body)          # add remaining planets found to the list
                     for station in stations:
                         listOfStations.append(station)      # add remaining statinos found to the list
 
