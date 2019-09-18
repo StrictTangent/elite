@@ -124,21 +124,8 @@ def elite_main(request):
                         distanceTo = listOfStations[i].distance_to_star
                         pad = listOfStations[i].max_landing_pad_size
                         distance = distances[sysName]
+                        id = listOfStations[i].station_id
 
-                        #get updated time
-                        res = requests.get('https://eddb.io/station/' + str(listOfStations[i].station_id))
-                        res.raise_for_status()
-                        soup = bs4.BeautifulSoup(res.text, features="html.parser")
-                        elements = soup.select('div div div div')
-                        next = False
-                        updated = "Unknown"
-                        for element in elements:
-                            if next:
-                                updated = element.getText()
-                                next = False
-                                break
-                            if element.getText() == 'Price Update:':
-                                next = True
 
 
                         ## NOW UPDATE TO NEWEST PRICES WITHIN THE TOP 20 STATIONS ##
@@ -158,11 +145,27 @@ def elite_main(request):
                             'distanceToArrival':distanceTo,
                             'distance':distance,
                             'pad':pad,
-                            'updated':updated})
+                            'id':id})
 
                         sellingStations.sort(key=lambda x: x['price'], reverse=True)    # finally sort the stations by the new price
-
-                stationResults = {'stations':sellingStations[:10]}
+                finalList = sellingStations[:10]
+                for station in finalList:
+                    #get updated time
+                    res = requests.get('https://eddb.io/station/' + str(station['id']))
+                    res.raise_for_status()
+                    soup = bs4.BeautifulSoup(res.text, features="html.parser")
+                    elements = soup.select('div div div div')
+                    next = False
+                    updated = "Unknown"
+                    for element in elements:
+                        if next:
+                            updated = element.getText()
+                            next = False
+                            break
+                        if element.getText() == 'Price Update:':
+                            next = True
+                    station.update({'updated':updated})
+                stationResults = {'stations':finalList}
                 #results = {'stations':sellingStations[:10], 'planets':listOfPlanets}    # create a dictionary of 'results' to pass to the template which include
                                                                                         # both stations to sell at and planets to mine at
                 request.session['results'] = sellingStations[:10]
