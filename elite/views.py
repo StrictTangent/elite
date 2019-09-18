@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-import json, requests, ijson, csv, time
+import json, requests, ijson, csv, time, bs4
 from django.contrib.auth.decorators import login_required
 from .models import Planet, Price, System
 from django.db.models import Q
@@ -46,6 +46,7 @@ def elite_main(request):
                         traffic = trafficData['traffic']['week']
                         del trafficData
 
+
                         response = requests.get(url=securityURL, params=securityPARAMS)
                         securityData = response.json()
                         del response
@@ -71,7 +72,7 @@ def elite_main(request):
                 return render(request, 'elite/wheretomine.html', {'form':form,'stationResults':stationResults, 'planetResults':pList})
 
             else:   #IF WE ARE LOOKING UP STATIONS
-                RADIUS_MAX = 100 # set the search radius to 30 lightyears
+                RADIUS_MAX = 100 # set the max search radius to 100 lightyears
 
                 location = form.cleaned_data['location']
                 radius = form.cleaned_data['radius']
@@ -124,6 +125,21 @@ def elite_main(request):
                         pad = listOfStations[i].max_landing_pad_size
                         distance = distances[sysName]
 
+                        #get updated time
+                        res = requests.get('https://eddb.io/station/' + str(listOfStations[i].station_id))
+                        res.raise_for_status()
+                        soup = bs4.BeautifulSoup(res.text, features="html.parser")
+                        elements = soup.select('div div div div')
+                        next = False
+                        updated = "Unknown"
+                        for element in elements:
+                            if next:
+                                updated = element.getText()
+                                next = False
+                                break
+                            if element.getText() == 'Price Update:':
+                                next = True
+
 
                         ## NOW UPDATE TO NEWEST PRICES WITHIN THE TOP 20 STATIONS ##
                         PARAMS = {'systemName':sysName, 'stationName':name}
@@ -141,7 +157,8 @@ def elite_main(request):
                             'price':price,
                             'distanceToArrival':distanceTo,
                             'distance':distance,
-                            'pad':pad})
+                            'pad':pad,
+                            'updated':updated})
 
                         sellingStations.sort(key=lambda x: x['price'], reverse=True)    # finally sort the stations by the new price
 

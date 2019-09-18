@@ -67,9 +67,9 @@
 
         <table>
           <tr>
-            <th>SYSTEM</th>
-            <th>BODY</th>
-            <th>ARRIVAL DISTANCE</th>
+            <th>System</th>
+            <th>Body</th>
+            <th>Arrival Distance</th>
             <th>Distance from {{ form.location.value }}</th>
             <th>Weekly Traffic</th>
             <th>Security Level</th>
@@ -93,12 +93,13 @@
         <p>Select a station name to view mining locations nearby.</p>
         <table>
           <tr>
-            <th>SYSTEM</th>
-            <th>STATION</th>
-            <th>LANDING PAD</th>
-            <th>ARRIVAL DISTANCE</th>
+            <th>System</th>
+            <th>Station</th>
+            <th>Landing Pad</th>
+            <th>Arrival Distance</th>
             <th>Distance from {{ form.location.value }}</th>
-            <th>SELL PRICE</th>
+            <th>Sell Price</th>
+            <th>Last Updated</th>
           </tr>
         {% for station in stationResults.stations %}
         <tr>
@@ -115,6 +116,7 @@
           <td>{{ station.distanceToArrival }} <i>ls</i></td>
           <td>{{ station.distance }} <i>ly</i></td>
           <td>{{ station.price }}</td>
+          <td>{{ station.updated }}</td>
 
         </tr>
         {% endfor %}
