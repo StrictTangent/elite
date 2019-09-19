@@ -68,7 +68,7 @@ def elite_main(request):
                         break
 
 
-                stationResults = {'stations':results, 'sellStation':request.POST.get('stationName')}
+                stationResults = {'stations':results, 'sellStation':request.POST.get('stationName'), 'sellSystem':request.POST.get('systemName')}
                 return render(request, 'elite/wheretomine.html', {'form':form,'stationResults':stationResults, 'planetResults':pList})
 
             else:   #IF WE ARE LOOKING UP STATIONS
@@ -125,8 +125,6 @@ def elite_main(request):
                         pad = listOfStations[i].max_landing_pad_size
                         distance = distances[sysName]
                         id = listOfStations[i].station_id
-
-
 
                         ## NOW UPDATE TO NEWEST PRICES WITHIN THE TOP 20 STATIONS ##
                         PARAMS = {'systemName':sysName, 'stationName':name}
