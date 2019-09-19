@@ -1,0 +1,18 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+  <div class="about">
+    <h3>ABOUT</h3>
+
+    <p>CMDR Strict's Void Opal Tool began as a summer project to learn the <a href="https://www.djangoproject.com/"> Django web framework</a>
+    and to brush up on my Python. While perhaps not the <i>ideal</i> framework for this kind of application, the process of building the app was challenging, rewarding, and illuminating.</p>
+    <p>The raw data used to construct the PostgreSQL database used by this program is sourced from <a href="https://www.edsm.net/">EDSM.net</a> &
+    <a href="https://eddb.io/api">EDDB.io</a>.</p>
+    <p>Turns out 105GB files of data concerning an entire galaxy is a lot to parse through and wrangle!</p>
+    <p>Queries for the latest information are made to EDSM using their <a href="https://www.edsm.net/en/api-v1">API</a>.</p>
+    <p>Additional market information not directly exposed by the EDSM API is obtained by webscraping individual station listings on EDDB.io</p>
+    <br>
+    <p><a href="https://github.com/StrictTangent/elite">View the project on GitHub</a></p>
+  </div>
+{% endblock %}

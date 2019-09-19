@@ -1,57 +1,8 @@
-<!DOCTYPE html>
-{% load staticfiles %}
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>CMDR Strict's Void Opal Tool</title>
+{% extends 'base_layout.html' %}
 
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
-    <style>
+{% block content %}
 
-      body {
-        background-color: #000000;
-        background-image: url('/static/elite.png');
-        background-size: cover;
-        background-repeat-y: no-repeat;
-        background-position: right top;
-        background-attachment: fixed;
-        font-family: Ubuntu;
-        color: white;
-      }
-
-      table, th, td {
-        border: 1px solid orange;
-        border-collapse: collapse;
-        padding: 5px;
-        text-align: left;
-        }
-        th {
-          font-size: 1em
-        }
-
-        tr:nth-child(even) {background: rgba(128, 128, 128, .5)}
-      .footer {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        text-align: left;
-        color: white;
-      }
-      input.stationButton {
-        background: none;
-        color: #fff;
-        cursor: pointer;
-        border: 0;
-        font-size: 1em;
-      }
-</style>
-
-  </head>
-  <body>
-
-    <h1>CMDR Strict's Void Opal Tool</h1>
-    <p><i>Enter star system to find locations sell void opals within radius of up to 100 light years.
+    <p><i>Enter star system to find  the best locations sell void opals within radius of up to 100 light years.
     <br>Then select station to see nearby planets to mine.</i></p>
     <form action="/elite/" method="post">
       {% csrf_token %}
@@ -123,9 +74,4 @@
       </div>
 
     {% endif %}
-
-    <div class="footer">
-      <small>&copy; 2019 StrictTangent 2019</small>
-    </div>
-  </body>
-</html>
+{% endblock %}

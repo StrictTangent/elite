@@ -1,0 +1,30 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+  <div class="about">
+    <h3>FAQ</h3>
+    <h4>What is the criteria for planets to mine?</h4>
+    <p><i>From what I've been able to gather on player forums, the consensus for void opal minings seems to be
+    that cores are equally likely to be found in any icy rings regardless of 'reserve level'. While many commanders
+  still choose only to explore in 'Pristine' rings, this tool does not make any distinction between ice ringed planets
+of different reserve types. When the user selects a station, the program will examine the area around that station within
+a 20 light-year radius, selecting the 20 closest planets with icy rings.</i></p>
+
+    <h4>How accurate is the market data?</h4>
+    <p><i>The market data is just as accurate as the other tools like eddb.io, inara.cz, etc.
+     Ultimately this information is coming from the same place. My database of void opal prices gets updated
+    from EDSM.net every morning, and prices for individual stations are updated when the user makes a search in an area.
+   If results from a search indicate that the price hasn't been updated in hours (or days!), that's only because there
+  isn't any newer data available yet.</i></p>
+
+    <h4>Can I even rely on this info?</h4>
+    <p><i>I make every effort to supply information that is up to date, but Elite: Dangerous is a complex and everchanging
+     game. Some icy rings won't have void opal hotspots. Sometimes you'll search a long time to find a core.
+     That's all just part of the game. When selecting a station to sell at, it is best to choose one with more recently updated
+   market information.</i></p>
+  </div>
+
+
+
+{% endblock %}
